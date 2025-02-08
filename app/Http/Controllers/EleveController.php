@@ -8,13 +8,25 @@ use App\Http\Requests\UpdateEleveRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\EleveRepository;
 use Illuminate\Http\Request;
-use App\Models\Parents;
+use App\Models\User;
+use App\Models\UserProfil;
+use App\Models\Diplome;
 use App\Models\Pays;
+use App\Models\Filere;
+use App\Models\TypeCours;
+use App\Models\Profil;
+use Illuminate\Support\Facades\Hash;
+use App\Models\Parents;
 use App\Models\Sexe;
+use Illuminate\Support\Str;
 use Flash;
+use DB;
+use App\Mail\Contact;
+use Illuminate\Support\Facades\Mail;
 
 class EleveController extends AppBaseController
 {
+    
     /** @var EleveRepository $eleveRepository*/
     private $eleveRepository;
 
@@ -41,11 +53,7 @@ class EleveController extends AppBaseController
         $pays = Pays::pluck('libelle', 'id')->prepend('Sélectionner un pays', '');
         $nationalites = Pays::pluck('libelle', 'id')->prepend('Sélectionner une nationalité', '');
         $sexes = Sexe::pluck('libelle', 'id')->prepend('Sélectionner un sexe', '');
-        return view('eleves.create')
-            ->with('parents', $parents)
-            ->with('pays', $pays)
-            ->with('nationalites', $nationalites)
-            ->with('sexes', $sexes);
+        return view('eleves.create')->with('parents', $parents)->with('pays', $pays)->with('nationalites', $nationalites)->with('sexes', $sexes);
     }
 
     /**
@@ -53,13 +61,77 @@ class EleveController extends AppBaseController
      */
     public function store(CreateEleveRequest $request)
     {
-        $input = $request->all();
+        try {
+            DB::beginTransaction();
+            
+            $input = $request->all();
 
-        $eleve = $this->eleveRepository->create($input);
+            // Créer l'élève
+            try {
+                $data = [
+                    'nom_prenom' => $input['nom_prenom'],
+                    'date_naissance' => date('Y-m-d', strtotime($input['date_naissance'])),
+                    'lieu_naissance' => $input['lieu_naissance'],
+                    'nationalite' => $input['nationalite'],
+                    'pays_residence' => $input['pays_residence'],
+                    'telephone' => $input['telephone'],
+                    'email' => $input['email'],
+                    'sexe' => $input['sexe'],
+                    'parent' => $input['parent']
+                ];
+                
+                $eleve = $this->eleveRepository->create($data);
+            } catch (\Exception $e) {
+                throw $e;
+            }
+            
+            // Créer l'utilisateur
+            try {
+                $password = Str::random(10);
+                $user = User::create([
+                    'name' => $input['nom_prenom'],
+                    'email' => $input['email'],
+                    'password' => Hash::make($password),
+                    'remember_token' => Str::random(10),
+                ]);
 
-        Flash::success('Eleve crée avec succès.');
+                // Envoyer l'email avec les credentials
+                $emailData = [
+                    'email' => $input['email'],
+                    'subject' => 'Vos informations de connexion - ' . config('app.name'),
+                    'message' => "Email : " . $input['email'] . "\nMot de passe : " . $password . "\n" . url('/login')
+                ];
+                Mail::to($input['email'])->send(new Contact($emailData));
 
-        return redirect(route('eleves.index'));
+            } catch (\Exception $e) {
+                throw $e;
+            }
+
+            // Créer le profil Élève
+            try {
+                $profilEleve = Profil::where('libelle', 'Eleve')->first();
+                if (!$profilEleve) {
+                    throw new \Exception('Le profil Élève n\'existe pas');
+                }
+
+                UserProfil::create([
+                    'user' => $user->id,
+                    'profil' => $profilEleve->id,
+                    'eleve' => $eleve->id
+                ]);
+            } catch (\Exception $e) {
+                throw $e;
+            }
+
+            DB::commit();
+            Flash::success('Élève enregistré avec succès.');
+
+            return redirect(route('eleves.index'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Flash::error('Une erreur est survenue lors de l\'enregistrement de l\'élève: ' . $e->getMessage());
+            return redirect()->back()->withInput();
+        }
     }
 
     /**
@@ -94,12 +166,7 @@ class EleveController extends AppBaseController
         $pays = Pays::pluck('libelle', 'id')->prepend('Sélectionner un pays', '');
         $nationalites = Pays::pluck('libelle', 'id')->prepend('Sélectionner une nationalité', '');
         $sexes = Sexe::pluck('libelle', 'id')->prepend('Sélectionner un sexe', '');
-        return view('eleves.edit')
-            ->with('eleve', $eleve)
-            ->with('parents', $parents)
-            ->with('pays', $pays)
-            ->with('nationalites', $nationalites)
-            ->with('sexes', $sexes);
+        return view('eleves.edit')->with('eleve', $eleve)->with('parents', $parents)->with('pays', $pays)->with('nationalites', $nationalites)->with('sexes', $sexes);
     }
 
     /**
@@ -143,8 +210,4 @@ class EleveController extends AppBaseController
 
         return redirect(route('eleves.index'));
     }
-
-   
-    
-
 }

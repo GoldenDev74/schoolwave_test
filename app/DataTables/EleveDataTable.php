@@ -19,22 +19,22 @@ class EleveDataTable extends DataTable
         $dataTable = new EloquentDataTable($query);
 
         return $dataTable
-        ->editColumn('date_naissance', function ($request) {
-            return $request->date_naissance ? $request->date_naissance->format('d-m-Y') : '';
-        })
-        ->editColumn('nationalite', function ($row) {
-            return $row->nationalites->libelle;
-        })
-        ->editColumn('pays_residence', function ($row) {
-            return $row->paysResidence->libelle;
-        })
-        ->editColumn('parent', function ($row) {
-            return $row->parents->nom_prenom;
-        })
-        ->editColumn('sexe', function ($row) {
-            return $row->sexes->libelle;
-        })
-        ->addColumn('action', 'eleves.datatables_actions');
+            ->editColumn('date_naissance', function ($request) {
+                return $request->date_naissance ? date('d-m-Y', strtotime($request->date_naissance)) : '';
+            })
+            ->editColumn('nationalite', function ($row) {
+                return $row->nationalites ? $row->nationalites->libelle : '';
+            })
+            ->editColumn('pays_residence', function ($row) {
+                return $row->paysResidence ? $row->paysResidence->libelle : '';
+            })
+            ->editColumn('parent', function ($row) {
+                return $row->parents ? $row->parents->nom_prenom : '';
+            })
+            ->editColumn('sexe', function ($row) {
+                return $row->sexes ? $row->sexes->libelle : '';
+            })
+            ->addColumn('action', 'eleves.datatables_actions');
     }
 
     /**
@@ -67,14 +67,7 @@ class EleveDataTable extends DataTable
                 'language' => [
                     'url' => url('vendor/datatables/French.json')
                 ],
-                'buttons'   => [
-                    // Enable Buttons as per your need
-//                    ['extend' => 'create', 'className' => 'btn btn-default btn-sm no-corner',],
-//                    ['extend' => 'export', 'className' => 'btn btn-default btn-sm no-corner',],
-//                    ['extend' => 'print', 'className' => 'btn btn-default btn-sm no-corner',],
-//                    ['extend' => 'reset', 'className' => 'btn btn-default btn-sm no-corner',],
-//                    ['extend' => 'reload', 'className' => 'btn btn-default btn-sm no-corner',],
-                ],
+                'buttons'   => []
             ]);
     }
 
@@ -105,6 +98,6 @@ class EleveDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'eleves_datatable_' . time();
+        return 'eleves_' . date('YmdHis');
     }
 }

@@ -89,6 +89,12 @@
                 <p>Mes Affectations </p>
             </a>
         </li>
+        <li class="nav-item">
+            <a href="{{ route('suiviCoursEnseignant.index') }}" class="nav-link {{ Request::is('suiviCoursEnseignant*') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                <p>Suivi Cours Enseignant</p>
+            </a>
+        </li>
     </ul>
 </li>
 
@@ -293,5 +299,24 @@
     <a href="{{ route('suivi_cours.index') }}" class="nav-link {{ Request::is('suiviCours*') ? 'active' : '' }}">
         <i class="nav-icon fas fa-eye"></i>
         <p>Suivi Cours</p>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="{{ route('suiviCoursParents.index') }}" class="nav-link {{ Request::is('suiviCoursParents*') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-user-friends"></i>
+        <p>Suivi des Cours Parents</p>
+    </a>
+</li>
+<li class="nav-item">
+    <a href="{{ route('suiviCoursEleves.index') }}" class="nav-link {{ Request::is('suiviCoursEleves*') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-user-graduate"></i>
+        <p>Suivi des Cours Eleves</p>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a href="{{ route('classes.index') }}" class="nav-link {{ Request::is('classes*') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-chalkboard"></i>
+        <p>Classes</p>
     </a>
 </li>

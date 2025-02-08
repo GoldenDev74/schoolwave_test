@@ -109,6 +109,7 @@ class EnseignantDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'enseignants_datatable_' . time();
+        return 'enseignants_datatable_' . time();
     }
+
 }
