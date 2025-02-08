@@ -68,7 +68,7 @@
 <!-- Nationalite Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('nationalite', 'Nationalite:') !!}
-    {!! Form::number('nationalite', null, ['class' => 'form-control']) !!}
+    {!! Form::select('nationalite', $nationalites, null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Enseignant Field -->
@@ -92,7 +92,7 @@
 <!-- Type Personnel Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('type_personnel', 'Type Personnel:') !!}
-    {!! Form::number('type_personnel', null, ['class' => 'form-control']) !!}
+    {!! Form::select('type_personnel', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Email Field -->

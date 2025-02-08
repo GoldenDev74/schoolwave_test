@@ -5,7 +5,10 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Mail\Mailables\Address;
 use App\Models\Correspondance;
 
 class CorrespondanceMail extends Mailable
@@ -14,20 +17,29 @@ class CorrespondanceMail extends Mailable
 
     public $correspondance;
 
-    public function __construct(Correspondance $correspondance)
-    {
-        $correspondance->load('sender'); // Charge la relation "sender"
+    public function __construct(Array $correspondance)
+    { // Charge la relation "sender"
         $this->correspondance = $correspondance;
     }
 
-    // SUPPRIMER TOUTES LES AUTRES MÉTHODES (envelope, content, attachments)
-    // ET GARDER UNIQUEMENT build()
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            from: new Address('no-reply@webees.org', 'WEBEES ADMINISTRATION '),
+            subject: $this->correspondance["objet"],
+        );
+    }
 
-// Dans CorrespondanceMail.php
-// CorrespondanceMail.php
-public function build()
-{
-    return $this->subject($this->correspondance->objet)
-               ->view('emails.correspondance');
-}
+
+    public function content(): Content
+    {
+        return new Content(
+            view: 'email.correspondance',
+        );
+    }
+
+    public function attachments(): array
+    {
+        return [];
+    }
 }

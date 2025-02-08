@@ -53,8 +53,9 @@ class EnseignantController extends AppBaseController
         $diplomes = Diplome::pluck('libelle', 'id');
         $filieres = Filere::pluck('libelle', 'id');
         $pays = Pays::pluck('libelle', 'id');
+        $nationalites = Pays::pluck('libelle', 'id');
         $typePersonnels = TypePersonnel::pluck('libelle', 'id');
-        return view('enseignants.create')->with('sexes', $sexes)->with('diplomes', $diplomes)->with('filieres', $filieres)->with('typeCours', $typeCours)->with('pays', $pays)->with('typePersonnels', $typePersonnels);
+        return view('enseignants.create')->with('sexes', $sexes)->with('diplomes', $diplomes)->with('filieres', $filieres)->with('typeCours', $typeCours)->with('pays', $pays)->with('nationalites', $nationalites)->with('typePersonnels', $typePersonnels);
     }
 
     /**
@@ -172,8 +173,9 @@ class EnseignantController extends AppBaseController
         $diplomes = Diplome::pluck('libelle', 'id');
         $filieres = Filere::pluck('libelle', 'id');
         $pays = Pays::pluck('libelle', 'id');
+        $nationalites = Pays::pluck('libelle', 'id');
         $typePersonnels = TypePersonnel::pluck('libelle', 'id');    
-        return view('enseignants.create')->with('sexes', $sexes)->with('diplomes', $diplomes)->with('filieres', $filieres)->with('typeCours', $typeCours)->with('pays', $pays)->with('typePersonnels', $typePersonnels) ;   
+        return view('enseignants.create')->with('sexes', $sexes)->with('diplomes', $diplomes)->with('filieres', $filieres)->with('typeCours', $typeCours)->with('pays', $pays)->with('nationalites', $nationalites)->with('typePersonnels', $typePersonnels) ;   
     }
 
     /**
