@@ -26,9 +26,10 @@ class CorrespondanceMail extends Mailable
     {
         return new Envelope(
             from: new Address('no-reply@webees.org', 'WEBEES ADMINISTRATION '),
-            subject: $this->correspondance["objet"],
+            subject: $this->correspondance["subject"],
         );
     }
+
 
 
     public function content(): Content
