@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateControleRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\ControleRepository;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\Contact;
+use App\Mail\CorrespondanceMail;
 use Illuminate\Http\Request;
 use App\Models\Enseignant;
 use App\Models\Classe;
@@ -226,7 +226,7 @@ class ControleController extends AppBaseController
                     Log::info("Envoi d'email pour l'absence de {$eleve->nom_prenom} à l'email {$parent->email}", $mailData);
 
                     // Envoi de l'email personnalisé
-                    Mail::to($parent->email)->send(new Contact($mailData));
+                    Mail::to($parent->email)->send(new CorrespondanceMail($mailData));
                 }
             } else {
                 Log::info("Aucun élève absent détecté pour le contrôle du {$dateControle}.");

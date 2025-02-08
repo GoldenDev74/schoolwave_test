@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateCorrespondanceRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\CorrespondanceRepository;
 use App\Models\{Profil, Effectif, User, AnneeScolaire, Parents, Eleve, Classe, UserProfil};
-use App\Mail\Contact;
+use App\Mail\CorrespondanceMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{DB, Mail, Http};
 //use Flash;
@@ -298,7 +298,7 @@ class CorrespondanceController extends AppBaseController
                 // Envoi d'email par lots (50 destinataires maximum par envoi)
                 foreach (array_chunk($recipients, 50) as $chunk) {
                     Mail::to($chunk)
-                        ->send(new Contact(array_merge($mailData, [
+                        ->send(new CorrespondanceMail(array_merge($mailData, [
                             'email' => auth()->user()->email,
                         ])));
                 }
