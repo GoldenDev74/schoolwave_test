@@ -7,6 +7,7 @@ use App\Http\Requests\CreateExamenRequest;
 use App\Http\Requests\UpdateExamenRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\ExamenRepository;
+use App\Models\Eleve;
 // Ajoutez ces lignes en haut du fichier ExamenController.php
 use App\Models\AffectationMatiere;
 use App\Models\Effectif;
@@ -40,9 +41,11 @@ class ExamenController extends AppBaseController
      */
     public function create()
     {
-        $typeExamens = TypeExamen::pluck('libelle', 'id'); // Liste des types d'examens
-        
-        return view('examens.create')->with(compact('typeExamens', 'classes'));
+        $typeExamens = TypeExamen::pluck('libelle', 'id');
+        $eleves = Eleve::pluck('nom_prenom', 'id');
+        $affectations = AffectationMatiere::pluck('matiere', 'id');
+
+        return view('examens.create')->with('typeExamens', $typeExamens)->with('eleves', $eleves)->with('affectations', $affectations);
     }
     
 
@@ -121,8 +124,11 @@ class ExamenController extends AppBaseController
             return redirect(route('examens.index'));
         }
 
-        return view('examens.edit')->with('examen', $examen);
-    }
+        $typeExamens = TypeExamen::pluck('libelle', 'id');
+        $eleves = Eleve::pluck('nom_prenom', 'id');
+        $affectations = AffectationMatiere::pluck('matiere', 'id');
+
+        return view('examens.edit')->with('examen', $examen)->with('typeExamens', $typeExamens)->with('eleves', $eleves)->with('affectations', $affectations);    }
 
     /**
      * Update the specified Examen in storage.
