@@ -36,8 +36,6 @@ use App\Http\Controllers\UserProfilController;
 use App\Http\Controllers\CorrespondanceController;
 use App\Http\Controllers\EnseignantControleController;
 use App\Http\Controllers\SuiviCoursController;
-use App\Http\Controllers\ControleController;
-use App\Http\Controllers\CorrespondanceController;
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
@@ -64,6 +62,12 @@ Route::prefix('affectationMatieres')->group(function () {
     Route::get('/emploiDuTemps', [AffectationMatiereController::class, 'emploiDuTemps'])->name('affectationMatieres.emploiDuTemps');
     Route::get('/getClasseInfo/{id}', [AffectationMatiereController::class, 'getClasseInfo'])->name('affectationMatieres.getClasseInfo');
 });
+
+Route::resource('meseleves', App\Http\Controllers\MesElevesController::class);
+Route::get('/meseleves/emploi-temps/{eleveId}', [App\Http\Controllers\MesElevesController::class, 'getEmploiTemps'])->name('meseleves.emploi-temps');
+Route::get('/get-notes/{eleveId}', [App\Http\Controllers\MesElevesController::class, 'getNotes'])->name('meseleves.getNotes');
+Route::get('/get-emploi-temps/{eleveId}', [App\Http\Controllers\MesElevesController::class, 'getEmploiTemps'])->name('meseleves.getEmploiTemps');
+
 
 // Autres ressources
 Route::resource('classes', ClasseController::class);

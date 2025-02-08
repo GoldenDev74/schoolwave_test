@@ -19,19 +19,19 @@
 
         <div class="card">
 
-            {!! Form::open(['route' => 'eleves.store']) !!}
+            {!! Form::open(['route' => 'meseleves.store']) !!}
 
             <div class="card-body">
 
                 <div class="row">
-                    @include('eleves.fields')
+                    @include('meseleves.fields')
                 </div>
 
             </div>
 
             <div class="card-footer">
                 {!! Form::submit('Enregistrer', ['class' => 'btn btn-primary']) !!}
-                <a href="{{ route('eleves.index') }}" class="btn btn-default"> Annuler </a>
+                <a href="{{ route('meseleves.index') }}" class="btn btn-default"> Annuler </a>
             </div>
 
             {!! Form::close() !!}

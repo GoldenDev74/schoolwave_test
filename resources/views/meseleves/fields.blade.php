@@ -51,9 +51,3 @@
     {!! Form::label('sexe', 'Sexe:') !!}
     {!! Form::select('sexe', $sexes, null, ['class' => 'form-control']) !!}
 </div>
-
-<!-- Parent Field -->
-<div class="form-group col-sm-3">
-    {!! Form::label('parent', 'Parent:') !!}
-    {!! Form::select('parent', $parents, null, ['class' => 'form-control']) !!}
-</div>

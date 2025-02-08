@@ -5,16 +5,6 @@
     <!-- En-tête Statistiques -->
     <div class="bg-white px-4">
         <h4 class="text-indigo-900 mb-4">Statistiques</h4>
-<<<<<<< HEAD
-
-=======
-        <div class="col-sm-6">
-                    <a class="btn btn-primary float-left"
-                       href="{{ route('testMail') }}">
-                        Test Mail
-                    </a>
-                </div>
->>>>>>> 9557ee469115dda5e8f36788a04f70f84d7c19fc
 
         <div class="row g-4 mb-5">
         <!-- Carte Élèves -->
