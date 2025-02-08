@@ -148,3 +148,28 @@ Route::get('correspondances/get-recipients', [App\Http\Controllers\Correspondanc
 
 
 
+// Routes pour le changement de mot de passe
+Route::middleware(['auth'])->group(function () {
+     Route::get('/change-password', [App\Http\Controllers\ChangePasswordController::class, 'showChangePasswordForm'])->name('change.password');
+     Route::post('/change-password', [App\Http\Controllers\ChangePasswordController::class, 'changePassword'])->name('change.password.post');
+     
+     // Routes pour les élèves
+     Route::get('suivi-cours-eleves', [App\Http\Controllers\SuiviCoursElevesController::class, 'index'])
+         ->name('suiviCoursEleves.index')
+         ->middleware('role:eleve');
+         
+     // Routes pour les parents
+     Route::get('suivi-cours-parents', [App\Http\Controllers\SuiviCoursParentsController::class, 'index'])
+         ->name('suiviCoursParents.index')
+         ->middleware('role:parent');
+ });
+ 
+ Route::get('get-matieres', [App\Http\Controllers\SuiviCoursParentsController::class, 'getMatieres'])
+     ->name('getMatieres');
+ 
+ // Routes pour le suivi des cours des enseignants
+ Route::resource('suiviCoursEnseignant', App\Http\Controllers\SuiviCoursEnseignantController::class);
+ Route::get('/api/enseignant/classes', [App\Http\Controllers\SuiviCoursEnseignantController::class, 'getEnseignantClasses']);
+ Route::get('/api/enseignant/classe/{classe}/matieres', [App\Http\Controllers\SuiviCoursEnseignantController::class, 'getEnseignantMatieres']);
+ Route::get('/api/enseignant/suivis/{classe}/{matiere}', [App\Http\Controllers\SuiviCoursEnseignantController::class, 'getSuivis']);
+ 
