@@ -17,20 +17,20 @@
     <ul class="nav nav-treeview" style="padding-left: 15px;">
         <li class="nav-item">
             <a href="{{ route('matieres.index') }}" class="nav-link {{ Request::is('matieres*') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-regular fa-circle"></i>
-            <p>Matières</p>
+                <i class="nav-icon fas fa-book-open"></i>
+                <p>Matières</p>
             </a>
         </li>
         <li class="nav-item">
             <a href="{{ route('categorieMatieres.index') }}" class="nav-link {{ Request::is('categorieMatieres*') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-regular fa-circle"></i>
-            <p>Catégories matières</p>
+                <i class="nav-icon fas fa-tag"></i>
+                <p>Catégories matières</p>
             </a>
         </li>
         <li class="nav-item">
             <a href="{{ route('typeCours.index') }}" class="nav-link {{ Request::is('typeCours*') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-regular fa-circle"></i>
-            <p>Type cours</p>
+                <i class="nav-icon fas fa-graduation-cap"></i>
+                <p>Type cours</p>
             </a>
         </li>
     </ul>
@@ -48,14 +48,14 @@
     <ul class="nav nav-treeview" style="padding-left: 15px;">
         <li class="nav-item">
             <a href="{{ route('examens.index') }}" class="nav-link {{ Request::is('examens*') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-regular fa-circle"></i>
-            <p>Examens</p>
+                <i class="nav-icon fas fa-pencil-alt"></i>
+                <p>Examens</p>
             </a>
         </li>
         <li class="nav-item">
             <a href="{{ route('typeExamens.index') }}" class="nav-link {{ Request::is('typeExamens*') ? 'active' : '' }}">
-            <i class="nav-icon fas fa-regular fa-circle"></i>
-            <p>Type Examens</p>
+                <i class="nav-icon fas fa-clipboard-list"></i>
+                <p>Type Examens</p>
             </a>
         </li>
     </ul>
@@ -73,26 +73,26 @@
     <ul class="nav nav-treeview" style="padding-left: 15px;">
         <li class="nav-item">
             <a href="{{ route('enseignants.index') }}" class="nav-link {{ Request::is('enseignants*') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-regular fa-circle"></i>
-                <p>Enseignants</p>
+            <i class="nav-icon fas fa-user-tie"></i>
+            <p>Enseignants</p>
             </a>
         </li>
         <li class="nav-item">
             <a href="{{ route('affectationMatieres.index') }}" class="nav-link {{ Request::is('affectation-matieres*') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-regular fa-circle"></i>
-                <p>Affectations Matières</p>
+            <i class="nav-icon fas fa-tasks"></i>
+            <p>Affectations Matières</p>
             </a>
         </li>
         <li class="nav-item">
             <a href="{{ route('mesAffectationMatieres.index') }}" class="nav-link {{ Request::is('mesAffectationMatieres*') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-regular fa-circle"></i>
-                <p>Mes Affectations </p>
+                <i class="nav-icon fas fa-tasks"></i>
+                <p>Mes Affectations Matières</p>
             </a>
         </li>
         <li class="nav-item">
             <a href="{{ route('suiviCoursEnseignant.index') }}" class="nav-link {{ Request::is('suiviCoursEnseignant*') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-regular fa-circle"></i>
-                <p>Suivi Cours Enseignant</p>
+            <i class="nav-icon fas fa-eye"></i>
+            <p>Suivi Cours Enseignant</p>
             </a>
         </li>
     </ul>
