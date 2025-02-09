@@ -81,11 +81,11 @@ class SuiviCoursParentsController extends AppBaseController
             return [$enfant->id => $enfant->nom_prenom];
         });
 
-        return view('suiviCoursParents.index')
-            ->with('hasAccess', true)
-            ->with('suivis', $suivis)
-            ->with('enfants', $enfantsList)
-            ->with('matieres', DB::table('matiere')->pluck('libelle', 'id'));
+        return $dataTable->render('suiviCoursParents.index', [
+            'hasAccess' => true,
+            'enfants' => $enfantsList,
+            'matieres' => DB::table('matiere')->pluck('libelle', 'id')
+        ]);
     }
 
     public function show($id)

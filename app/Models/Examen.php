@@ -45,4 +45,9 @@ class Examen extends Model
     {
         return $this->belongsTo(Effectif::class, 'effectif');
     }
+
+    public function eleves(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Eleve::class, 'eleve');
+    }
 }

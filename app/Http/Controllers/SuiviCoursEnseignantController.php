@@ -42,8 +42,40 @@ class SuiviCoursEnseignantController extends AppBaseController
             ->orderBy('sc.date', 'desc')
             ->paginate(10);
 
+        // Récupérer les affectations matières de l'enseignant avec les détails
+        $affectationMatieres = DB::table('affectation_matiere as am')
+            ->join('classe as c', 'c.id', '=', 'am.classe')
+            ->join('matiere as m', 'm.id', '=', 'am.matiere')
+            ->where('am.enseignant', $enseignant->id)
+            ->select(
+                'am.id',
+                'm.libelle as matiere_nom',
+                'c.libelle as classe_nom',
+                'am.horaire',
+                'am.type_cours'
+            )
+            ->get()
+            ->mapWithKeys(function($affectation) {
+                $typeCoursLabel = $affectation->type_cours == 1 ? 'Cours' : 'TD';
+                return [
+                    $affectation->id => sprintf(
+                        '%s - %s %s - %sH',
+                        $affectation->matiere_nom,
+                        $affectation->classe_nom,
+                        $typeCoursLabel,
+                        $affectation->horaire
+                    )
+                ];
+            });
+
+        if ($affectationMatieres->isEmpty()) {
+            Flash::error('Aucune affectation de matière trouvée pour votre compte.');
+            return redirect()->back();
+        }
+
         return view('suiviCoursEnseignant.index')
-            ->with('suiviCoursEnseignant', $suiviCoursEnseignant);
+            ->with('suiviCoursEnseignant', $suiviCoursEnseignant)
+            ->with('affectationMatieres', $affectationMatieres);
     }
 
     public function create()

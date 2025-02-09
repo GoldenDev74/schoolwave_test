@@ -170,8 +170,8 @@ class AffectationMatiereController extends AppBaseController
                 'enseignant' => 'required|exists:enseignant,id',
                 'type_cours' => 'required|exists:type_cours,id',
                 'mode_affection' => 'required|in:1,2',
-                'debut' => 'nullable|date',
-                'fin' => 'nullable|date|after_or_equal:debut'
+                'debut' => 'required_if:mode_affection,2|date',
+                'fin' => 'required_if:mode_affection,2|date|after_or_equal:debut',
             ], [
                 'jour.required' => 'Le jour est obligatoire',
                 'horaire.required' => 'L\'horaire est obligatoire',
@@ -606,8 +606,8 @@ class AffectationMatiereController extends AppBaseController
             'enseignant'     => 'required|exists:enseignant,id',
             'type_cours'     => 'required|exists:type_cours,id',
             'mode_affection' => 'required|in:1,2',
-            'debut'          => 'nullable|date',
-            'fin'            => 'nullable|date|after_or_equal:debut',
+            'debut' => 'required_if:mode_affection,2|date',
+            'fin' => 'required_if:mode_affection,2|date|after_or_equal:debut',
         ]);
     
         // Récupération de l'année scolaire active

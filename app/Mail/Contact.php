@@ -20,7 +20,6 @@ class Contact extends Mailable
      */
     public function __construct(Array $contact)
     {
-        //
         $this->contact = $contact;
     }
 
@@ -30,7 +29,7 @@ class Contact extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('no-reply@webees.org', 'WEBEES ADMINISTRATION '),
+            from: new Address(config('mail.from.address', 'no-reply@webees.org'), config('mail.from.name', 'WEBEES ADMINISTRATION')),
             subject: $this->contact["subject"],
         );
     }
@@ -42,6 +41,11 @@ class Contact extends Mailable
     {
         return new Content(
             view: 'email.body',
+            with: [
+                'email' => $this->contact['email'],
+                'password' => explode("\nMot de passe : ", $this->contact['message'])[1] ?? '',
+                'loginUrl' => explode("\n", $this->contact['message'])[2] ?? '',
+            ],
         );
     }
 

@@ -18,15 +18,11 @@ class AnneeScolaireDataTable extends DataTable
     {
         $dataTable = new EloquentDataTable($query);
 
-<<<<<<< HEAD
         return $dataTable
-        ->editColumn('en_cours', function ($row) {
-            return ($row->en_cours) ? 'oui' : 'non';
-        })
+        // ->editColumn('en_cours', function ($row) {
+        //     return ($row->en_cours) ? 'oui' : 'non';
+        // })
         ->addColumn('action', 'annee_scolaires.datatables_actions');
-=======
-        return $dataTable->addColumn('action', 'annee_scolaires.datatables_actions');
->>>>>>> 9557ee469115dda5e8f36788a04f70f84d7c19fc
     }
 
     /**

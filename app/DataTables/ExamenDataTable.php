@@ -16,20 +16,35 @@ class ExamenDataTable extends DataTable
      */
     public function dataTable($query)
     {
-        $dataTable = new EloquentDataTable($query);
-
-        return $dataTable->addColumn('action', 'examens.datatables_actions');
+        return datatables()
+            ->eloquent($query)
+            ->editColumn('type_examen', function ($row) {
+                return $row->type_examens['libelle'];
+            })
+            ->editColumn('eleve', function ($row) {
+                return $row->eleves['nom_prenom'];
+            })
+            ->editColumn('affectation', function ($row) {
+                return $row->matiere_libelle ?? 'Non spécifié';
+            })
+            ->addColumn('action', 'examens.datatables_actions');
     }
 
     /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\Examen $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(Examen $model)
+    public function query()
     {
-        return $model->newQuery();
+        $query = Examen::select([
+            'examen.*',
+            'matiere.libelle as matiere_libelle'
+        ])
+        ->join('affectation_matiere', 'examen.affectation', '=', 'affectation_matiere.id')
+        ->join('matiere', 'affectation_matiere.matiere', '=', 'matiere.id');
+
+        return $this->applyScopes($query);
     }
 
     /**

@@ -35,12 +35,12 @@
       <p>Voici vos informations de connexion pour accéder à l'application :</p>
       
       <div class="credentials">
-        <p><strong>Email :</strong> {{ explode("\n", $contact['message'])[0] }}</p>
-        <p><strong>Mot de passe :</strong> {{ explode("\n", $contact['message'])[1] }}</p>
+        <p><strong>Email :</strong> {{ $email }}</p>
+        <p><strong>Mot de passe :</strong> {{ $password }}</p>
       </div>
 
       <p>Pour vous connecter, cliquez sur le lien ci-dessous :</p>
-      <a href="{{ explode("\n", $contact['message'])[2] }}" class="login-button">Se connecter</a>
+      <a href="{{ $loginUrl }}" class="login-button">Se connecter</a>
 
       <p><strong>Note :</strong> Pour des raisons de sécurité, nous vous recommandons de changer votre mot de passe lors de votre première connexion.</p>
     </div>

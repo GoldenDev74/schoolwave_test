@@ -21,17 +21,11 @@ class SuiviCoursParentsDataTable extends DataTable
         $dataTable = new EloquentDataTable($query);
 
         return $dataTable
-            ->addColumn('enseignant', function($suiviCours) {
-                $enseignantId = $suiviCours->affectationMatiere->enseignant ?? null;
-                if ($enseignantId) {
-                    $enseignant = Enseignant::find($enseignantId);
-                    return $enseignant ? $enseignant->nom_prenom : 'Non défini';
-                }
-                return 'Non défini';
-            })
-            ->editColumn('date', function($suiviCours) {
-                return $suiviCours->date ? $suiviCours->date->format('d-m-Y') : '';
-            });
+        
+        ->editColumn('date', function($suiviCours) {
+            return $suiviCours->date ? $suiviCours->date->format('d-m-Y') : '';
+        })
+        ->addColumn('action', 'suivi_cours.datatables_actions');
     }
 
     /**
@@ -80,7 +74,14 @@ class SuiviCoursParentsDataTable extends DataTable
         return $this->builder()
             ->setTableId('dataTableBuilder')
             ->columns($this->getColumns())
-            ->minifiedAjax()
+            ->minifiedAjax('', '
+            {
+                data: function(d) {
+                    d.eleve = $("#enfant-filter").val();
+                    d.matiere = $("#matiere-filter").val();
+                }
+            }
+        ')
             ->parameters([
                 'dom'       => 'Bfrtip',
                 'stateSave' => false,
@@ -100,11 +101,11 @@ class SuiviCoursParentsDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'date' => ['name' => 'date', 'data' => 'date', 'title' => 'Date'],
-            'enseignant' => ['name' => 'enseignant', 'data' => 'enseignant', 'title' => 'Enseignant'],
-            'titre' => ['name' => 'titre', 'data' => 'titre', 'title' => 'Titre'],
-            'resume' => ['name' => 'resume', 'data' => 'resume', 'title' => 'Résumé'],
-            'observation' => ['name' => 'observation', 'data' => 'observation', 'title' => 'Observation']
+            'date',
+            'titre',
+            'resume',
+            'observation',
+            'affection_matiere'
         ];
     }
 
@@ -115,6 +116,6 @@ class SuiviCoursParentsDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'suivi_cours_parents_datatable_' . time();
+        return 'suivi_cours_datatable_' . time();
     }
 }

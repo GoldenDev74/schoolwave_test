@@ -16,7 +16,7 @@
         "laravel/tinker": "^2.7",
         "yajra/laravel-datatables-buttons": "9.0",
         "yajra/laravel-datatables-html": "9.0",
-        "yajra/laravel-datatables-oracle": "10.0"
+        "yajra/laravel-datatables-oracle": "^10.11"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

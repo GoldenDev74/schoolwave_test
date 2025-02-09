@@ -18,7 +18,11 @@ class SuiviCoursDataTable extends DataTable
     {
         $dataTable = new EloquentDataTable($query);
 
-        return $dataTable->addColumn('action', 'suivi_cours.datatables_actions');
+        return $dataTable
+            ->editColumn('date', function ($request) {
+                return $request->date ? date('d-m-Y', strtotime($request->date)) : '';
+            })
+            ->addColumn('action', 'suivi_cours.datatables_actions');
     }
 
     /**
