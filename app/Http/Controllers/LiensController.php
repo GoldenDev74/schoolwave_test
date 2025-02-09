@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateLiensRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\LiensRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class LiensController extends AppBaseController
 {

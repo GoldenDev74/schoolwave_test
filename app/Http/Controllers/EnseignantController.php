@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateEnseignantRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\EnseignantRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 use App\Models\User;
 use App\Models\UserProfil;
 use App\Models\Sexe;
@@ -20,7 +20,7 @@ use App\Models\TypePersonnel;
 use App\Models\Profil;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use DB;
+use Illuminate\Support\Facades\DB;
 use App\Mail\Contact;
 use Illuminate\Support\Facades\Mail;
 

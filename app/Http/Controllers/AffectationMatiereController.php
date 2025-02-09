@@ -5,18 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\AppBaseController;
 use App\Models\AffectationMatiere;
 use App\Models\Classe;
-use App\Models\Enseignant;
 use App\Models\Matiere;
+use App\Models\Enseignant;
+use App\Models\AnneeScolaire;
 use App\Models\TypeCours;
 use App\Models\JourSemaine;
 use App\Models\Horaire;
-use App\Models\AnneeScolaire;
 use App\Models\ModeAffectation;
 use Illuminate\Http\Request;
-use Flash;
+use Illuminate\Support\Facades\DB;
+use Laracasts\Flash\Flash;
 use Response;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 /**

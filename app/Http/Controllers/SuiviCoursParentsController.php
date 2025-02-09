@@ -11,10 +11,10 @@ use App\Models\Eleve;
 use App\Models\Effectif;
 use App\Models\Matiere;
 use Illuminate\Http\Request;
-use Flash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Laracasts\Flash\Flash;
 use Response;
-use Auth;
-use DB;
 
 class SuiviCoursParentsController extends AppBaseController
 {
@@ -32,6 +32,7 @@ class SuiviCoursParentsController extends AppBaseController
             if ($request->ajax()) {
                 return response()->json(['data' => []]);
             }
+            Flash::error('Vous n\'avez pas accès à cette page.');
             return view('suiviCoursParents.index')->with('hasAccess', false);
         }
 
@@ -44,6 +45,7 @@ class SuiviCoursParentsController extends AppBaseController
             if ($request->ajax()) {
                 return response()->json(['data' => []]);
             }
+            Flash::error('Aucun parent trouvé pour votre compte.');
             return view('suiviCoursParents.index')->with('hasAccess', false);
         }
         
@@ -56,6 +58,7 @@ class SuiviCoursParentsController extends AppBaseController
             if ($request->ajax()) {
                 return response()->json(['data' => []]);
             }
+            Flash::error('Aucun enfant n\'est associé à votre compte.');
             return view('suiviCoursParents.index')->with('hasAccess', false);
         }
 
@@ -70,17 +73,20 @@ class SuiviCoursParentsController extends AppBaseController
             $query = DB::table('suivi_cours as sc')
                 ->join('affectation_matiere as am', 'am.id', '=', 'sc.affection_matiere')
                 ->join('classe as c', 'c.id', '=', 'am.classe')
+                ->join('matiere as m', 'm.id', '=', 'am.matiere')
                 ->join('annee_scolaire as a', 'a.id', '=', 'am.annee_scolaire')
+                ->join('enseignant as e', 'e.id', '=', 'am.enseignant')
                 ->select([
                     'sc.date',
                     'c.libelle as classe',
+                    'm.libelle as matiere',
                     'sc.titre',
                     'sc.resume',
                     'sc.observation',
-                    'am.type_cours'
+                    'am.type_cours',
+                    'e.nom_prenom as enseignant'
                 ])
-                ->where('a.en_cours', true)
-                ->where('am.matiere', $request->matiere);
+                ->where('a.en_cours', true);
 
             // Récupérer l'effectif de l'élève
             $effectif = DB::table('effectif')
@@ -95,6 +101,12 @@ class SuiviCoursParentsController extends AppBaseController
 
             if ($effectif) {
                 $query->where('am.classe', $effectif->classe);
+
+                // Filtrer par matière si spécifiée
+                if ($request->has('matiere') && $request->matiere != '') {
+                    $query->where('am.matiere', $request->matiere);
+                }
+
                 return datatables()->of($query)->toJson();
             }
 
@@ -112,7 +124,7 @@ class SuiviCoursParentsController extends AppBaseController
         $suiviCours = SuiviCours::find($id);
 
         if (empty($suiviCours)) {
-            Flash::error('Suivi Cours not found');
+            Flash::error('Suivi de cours non trouvé');
             return redirect(route('suiviCoursParents.index'));
         }
 
@@ -151,6 +163,7 @@ class SuiviCoursParentsController extends AppBaseController
             ->where('a.en_cours', true)
             ->select('m.id', 'm.libelle')
             ->distinct()
+            ->orderBy('m.libelle')
             ->get();
 
         return response()->json($matieres);

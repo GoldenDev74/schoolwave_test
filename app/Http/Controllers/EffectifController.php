@@ -11,7 +11,10 @@ use Illuminate\Http\Request;
 use App\Models\AnneeScolaire;
 use App\Models\Classe;
 use App\Models\Eleve;
-use Flash;
+use App\Models\Effectif;
+use Illuminate\Support\Facades\DB;
+use Laracasts\Flash\Flash;
+use Response;
 
 class EffectifController extends AppBaseController
 {

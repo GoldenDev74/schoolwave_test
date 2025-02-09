@@ -19,8 +19,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Parents;
 use App\Models\Sexe;
 use Illuminate\Support\Str;
-use Flash;
-use DB;
+use Laracasts\Flash\Flash;
+use Illuminate\Support\Facades\DB;
 use App\Mail\Contact;
 use Illuminate\Support\Facades\Mail;
 

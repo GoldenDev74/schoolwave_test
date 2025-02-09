@@ -9,7 +9,7 @@ use App\Http\Controllers\AppBaseController;
 use App\Repositories\HoraireRepository;
 use Illuminate\Http\Request;
 use App\Models\TypeCours;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class HoraireController extends AppBaseController
 {

@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateSuiviCoursRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\SuiviCoursRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\Log;
 
 class SuiviCoursController extends AppBaseController

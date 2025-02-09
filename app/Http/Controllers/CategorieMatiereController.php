@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateCategorieMatiereRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\CategorieMatiereRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class CategorieMatiereController extends AppBaseController
 {

@@ -6,13 +6,17 @@ use App\Http\Requests\CreateSuiviCoursRequest;
 use App\Http\Requests\UpdateSuiviCoursRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Models\SuiviCours;
+use App\Models\Enseignant;
+use App\Models\Matiere;
+use App\Models\Classe;
+use App\Models\AnneeScolaire;
 use App\Models\AffectationMatiere;
 use Illuminate\Http\Request;
-use Flash;
+use Illuminate\Support\Facades\DB;
+use Laracasts\Flash\Flash;
 use Response;
 use App\DataTables\SuiviCoursDataTable;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class SuiviCoursEnseignantController extends AppBaseController
 {

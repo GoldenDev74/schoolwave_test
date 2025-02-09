@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateSallesRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\SallesRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class SallesController extends AppBaseController
 {

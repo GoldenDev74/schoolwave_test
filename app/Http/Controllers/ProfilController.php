@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateProfilRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\ProfilRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class ProfilController extends AppBaseController
 {

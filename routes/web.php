@@ -168,7 +168,7 @@ Route::middleware(['auth'])->group(function () {
          ->name('suiviCoursParents.index')
          ->middleware('role:parent');
  });
- 
+
  Route::get('get-matieres', [App\Http\Controllers\SuiviCoursParentsController::class, 'getMatieres'])
      ->name('getMatieres');
  
@@ -177,4 +177,6 @@ Route::middleware(['auth'])->group(function () {
  Route::get('/api/enseignant/classes', [App\Http\Controllers\SuiviCoursEnseignantController::class, 'getEnseignantClasses']);
  Route::get('/api/enseignant/classe/{classe}/matieres', [App\Http\Controllers\SuiviCoursEnseignantController::class, 'getEnseignantMatieres']);
  Route::get('/api/enseignant/suivis/{classe}/{matiere}', [App\Http\Controllers\SuiviCoursEnseignantController::class, 'getSuivis']);
- 
+
+Route::get('suiviCoursEleves', [App\Http\Controllers\SuiviCoursElevesController::class, 'index'])->name('suiviCoursEleves.index');
+Route::get('suiviCoursEleves/getMatieres', [App\Http\Controllers\SuiviCoursElevesController::class, 'getMatieres'])->name('suiviCoursEleves.getMatieres');

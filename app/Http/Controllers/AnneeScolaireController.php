@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateAnneeScolaireRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\AnneeScolaireRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class AnneeScolaireController extends AppBaseController
 {

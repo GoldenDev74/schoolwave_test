@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateSexeRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\SexeRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class SexeController extends AppBaseController
 {

@@ -22,8 +22,7 @@ use App\Models\AffectationMatiere;
 use Illuminate\Support\Facades\Log;
 use App\Models\Parents;
 use Illuminate\Support\Facades\DB;
-
-use Flash;
+use Laracasts\Flash\Flash;
 
 class EnseignantControleController extends AppBaseController
 {

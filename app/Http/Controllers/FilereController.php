@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateFilereRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\FilereRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class FilereController extends AppBaseController
 {

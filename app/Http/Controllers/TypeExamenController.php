@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateTypeExamenRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\TypeExamenRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class TypeExamenController extends AppBaseController
 {

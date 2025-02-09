@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateModeAffectationRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\ModeAffectationRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class ModeAffectationController extends AppBaseController
 {

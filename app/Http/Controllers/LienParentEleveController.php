@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateLienParentEleveRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\LienParentEleveRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class LienParentEleveController extends AppBaseController
 {

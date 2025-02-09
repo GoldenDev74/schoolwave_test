@@ -9,7 +9,9 @@ use App\Http\Controllers\AppBaseController;
 use App\Repositories\JourSemaineRepository;
 use Illuminate\Http\Request;
 use App\Models\JourSemaine;
-use Flash;
+use Illuminate\Support\Facades\DB;
+use Laracasts\Flash\Flash;
+use Response;
 
 class JourSemaineController extends AppBaseController
 {

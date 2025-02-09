@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateUserProfilRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\UserProfilRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class UserProfilController extends AppBaseController
 {

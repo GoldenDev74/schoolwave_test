@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateTypeHoraireRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\TypeHoraireRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class TypeHoraireController extends AppBaseController
 {

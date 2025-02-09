@@ -8,7 +8,7 @@ use App\Http\Requests\UpdatePaysRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\PaysRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class PaysController extends AppBaseController
 {

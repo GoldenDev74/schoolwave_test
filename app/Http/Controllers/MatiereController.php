@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\DataTables\MatiereDataTable;
 use App\Http\Requests\CreateMatiereRequest;
 use App\Http\Requests\UpdateMatiereRequest;
@@ -10,7 +9,7 @@ use App\Http\Controllers\AppBaseController;
 use App\Repositories\MatiereRepository;
 use Illuminate\Http\Request;
 use App\Models\CategorieMatiere;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class MatiereController extends AppBaseController
 {
