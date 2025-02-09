@@ -67,8 +67,7 @@ class EnseignantController extends AppBaseController
 
             $input = $request->all();
             
-            // Vérification des données reçues
-            \Log::debug('Données reçues:', $input);
+            
 
             // Création de l'enseignant
             try {
@@ -90,7 +89,6 @@ class EnseignantController extends AppBaseController
 
                 $enseignant = $this->enseignantRepository->create($data);
             } catch (\Exception $e) {
-                \Log::error('Erreur création enseignant: ' . $e->getMessage());
                 DB::rollBack();
                 Flash::error('Erreur lors de la création de l\'enseignant: ' . $e->getMessage());
                 return redirect()->back()->withInput();
@@ -114,20 +112,14 @@ class EnseignantController extends AppBaseController
                         'message' => "Email : " . $input['email'] . "\nMot de passe : " . $password . "\n" . url('/login')
                     ];
                     
-                    // Log avant l'envoi de l'email
-                    \Log::info('Tentative d\'envoi d\'email à : ' . $input['email']);
+                   
                     
                     Mail::to($input['email'])->send(new Contact($emailData));
-                    
-                    // Log après l'envoi de l'email
-                    \Log::info('Email envoyé avec succès à : ' . $input['email']);
                 } catch (\Exception $e) {
-                    \Log::error('Erreur lors de l\'envoi de l\'email : ' . $e->getMessage());
                     // On continue même si l'email échoue
                 }
 
             } catch (\Exception $e) {
-                \Log::error('Erreur création utilisateur: ' . $e->getMessage());
                 DB::rollBack();
                 Flash::error('Erreur lors de la création de l\'utilisateur: ' . $e->getMessage());
                 return redirect()->back()->withInput();
@@ -146,7 +138,6 @@ class EnseignantController extends AppBaseController
                     'personnel' => $enseignant->id,
                 ]);
             } catch (\Exception $e) {
-                \Log::error('Erreur création profil: ' . $e->getMessage());
                 DB::rollBack();
                 Flash::error('Erreur lors de la création du profil: ' . $e->getMessage());
                 return redirect()->back()->withInput();
@@ -158,7 +149,6 @@ class EnseignantController extends AppBaseController
             return redirect(route('enseignants.index'));
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Erreur générale: ' . $e->getMessage());
             Flash::error('Une erreur est survenue: ' . $e->getMessage());
             return redirect()->back()->withInput();
         }

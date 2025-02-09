@@ -129,7 +129,6 @@ class SuiviCoursEnseignantController extends AppBaseController
 
         } catch (\Exception $e) {
             DB::rollback();
-            \Log::error('Erreur lors de la création du suivi: ' . $e->getMessage());
             Flash::error('Erreur lors de la création du suivi. Veuillez réessayer.');
             return redirect()->back()->withInput();
         }
