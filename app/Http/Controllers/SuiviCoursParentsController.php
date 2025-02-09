@@ -18,7 +18,7 @@ use DB;
 
 class SuiviCoursParentsController extends AppBaseController
 {
-    public function index(SuiviCoursParentsDataTable $dataTable)
+    public function index(Request $request)
     {
         // Vérifier si l'utilisateur a le profil parent
         $user = Auth::user();
@@ -29,7 +29,9 @@ class SuiviCoursParentsController extends AppBaseController
             ->first();
 
         if (!$userProfil) {
-            Flash::error('Vous n\'avez pas accès à cette page.');
+            if ($request->ajax()) {
+                return response()->json(['data' => []]);
+            }
             return view('suiviCoursParents.index')->with('hasAccess', false);
         }
 
@@ -39,7 +41,9 @@ class SuiviCoursParentsController extends AppBaseController
             ->first();
 
         if (!$parent) {
-            Flash::error('Aucun parent trouvé pour votre compte.');
+            if ($request->ajax()) {
+                return response()->json(['data' => []]);
+            }
             return view('suiviCoursParents.index')->with('hasAccess', false);
         }
         
@@ -49,43 +53,58 @@ class SuiviCoursParentsController extends AppBaseController
             ->get();
 
         if ($enfants->isEmpty()) {
-            Flash::error('Aucun enfant n\'est associé à votre compte.');
+            if ($request->ajax()) {
+                return response()->json(['data' => []]);
+            }
             return view('suiviCoursParents.index')->with('hasAccess', false);
         }
 
-        // Récupérer les effectifs des enfants
-        $effectifs = DB::table('effectif')
-            ->join('annee_scolaire', 'annee_scolaire.id', '=', 'effectif.annee_scolaire')
-            ->join('classe', 'classe.id', '=', 'effectif.classe')
-            ->whereIn('effectif.eleve', $enfants->pluck('id'))
-            ->where('annee_scolaire.en_cours', true)
-            ->get();
+        // Pour les requêtes AJAX (DataTables)
+        if ($request->ajax()) {
+            // Si aucun élève ou aucune matière n'est sélectionnée, retourner un tableau vide
+            if (!$request->has('eleve') || $request->eleve == '' || 
+                !$request->has('matiere') || $request->matiere == '') {
+                return response()->json(['data' => []]);
+            }
 
-        // Récupérer les suivis de cours pour les classes des enfants
-        $suivis = DB::table('suivi_cours as sc')
-            ->join('affectation_matiere as am', 'am.id', '=', 'sc.affection_matiere')
-            ->join('classe as c', 'c.id', '=', 'am.classe')
-            ->join('matiere as m', 'm.id', '=', 'am.matiere')
-            ->whereIn('am.classe', $effectifs->pluck('classe'))
-            ->select(
-                'sc.*',
-                'm.libelle as matiere',
-                'c.libelle as classe',
-                'am.type_cours',
-                'am.horaire'
-            )
-            ->get();
+            $query = DB::table('suivi_cours as sc')
+                ->join('affectation_matiere as am', 'am.id', '=', 'sc.affection_matiere')
+                ->join('classe as c', 'c.id', '=', 'am.classe')
+                ->join('annee_scolaire as a', 'a.id', '=', 'am.annee_scolaire')
+                ->select([
+                    'sc.date',
+                    'c.libelle as classe',
+                    'sc.titre',
+                    'sc.resume',
+                    'sc.observation',
+                    'am.type_cours'
+                ])
+                ->where('a.en_cours', true)
+                ->where('am.matiere', $request->matiere);
 
-        // Préparer la liste des enfants pour le filtre
-        $enfantsList = $enfants->mapWithKeys(function($enfant) {
-            return [$enfant->id => $enfant->nom_prenom];
-        });
+            // Récupérer l'effectif de l'élève
+            $effectif = DB::table('effectif')
+                ->where('eleve', $request->eleve)
+                ->whereExists(function ($query) {
+                    $query->select(DB::raw(1))
+                        ->from('annee_scolaire')
+                        ->whereRaw('annee_scolaire.id = effectif.annee_scolaire')
+                        ->where('en_cours', true);
+                })
+                ->first();
 
+            if ($effectif) {
+                $query->where('am.classe', $effectif->classe);
+                return datatables()->of($query)->toJson();
+            }
+
+            return response()->json(['data' => []]);
+        }
+
+        // Pour l'affichage initial de la page
         return view('suiviCoursParents.index')
             ->with('hasAccess', true)
-            ->with('suivis', $suivis)
-            ->with('enfants', $enfantsList)
-            ->with('matieres', DB::table('matiere')->pluck('libelle', 'id'));
+            ->with('enfants', $enfants->pluck('nom_prenom', 'id'));
     }
 
     public function show($id)
@@ -103,12 +122,20 @@ class SuiviCoursParentsController extends AppBaseController
     // Méthode pour charger les matières d'un élève via AJAX
     public function getMatieres(Request $request)
     {
-        $eleveId = $request->get('eleve_id');
+        $eleveId = $request->input('eleve');
         
-        // Récupérer l'effectif (classe) actuel de l'élève
-        $effectif = Effectif::where('eleve', $eleveId)
-            ->whereHas('anneeScolaires', function($q) {
-                $q->where('en_cours', true);
+        if (!$eleveId) {
+            return response()->json([]);
+        }
+
+        // Récupérer la classe de l'élève pour l'année en cours
+        $effectif = DB::table('effectif')
+            ->where('eleve', $eleveId)
+            ->whereExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('annee_scolaire')
+                    ->whereRaw('annee_scolaire.id = effectif.annee_scolaire')
+                    ->where('en_cours', true);
             })
             ->first();
 
@@ -117,9 +144,14 @@ class SuiviCoursParentsController extends AppBaseController
         }
 
         // Récupérer les matières de la classe
-        $matieres = Matiere::whereHas('affectationMatieres', function($query) use ($effectif) {
-            $query->where('classe', $effectif->classe);
-        })->pluck('libelle', 'id');
+        $matieres = DB::table('affectation_matiere as am')
+            ->join('matiere as m', 'm.id', '=', 'am.matiere')
+            ->join('annee_scolaire as a', 'a.id', '=', 'am.annee_scolaire')
+            ->where('am.classe', $effectif->classe)
+            ->where('a.en_cours', true)
+            ->select('m.id', 'm.libelle')
+            ->distinct()
+            ->get();
 
         return response()->json($matieres);
     }

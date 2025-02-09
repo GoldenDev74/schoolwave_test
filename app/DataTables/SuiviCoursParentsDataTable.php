@@ -45,24 +45,32 @@ class SuiviCoursParentsDataTable extends DataTable
         // Par défaut, retourner une requête vide
         $query = SuiviCours::whereRaw('1 = 0');
 
-        // Ne procéder que si un élève ET une matière sont sélectionnés
-        if ($this->request()->has('eleve') && $this->request()->has('matiere')) {
+        // Ne procéder que si un élève est sélectionné
+        if ($this->request()->has('eleve') && $this->request()->get('eleve') != '') {
             $eleveId = $this->request()->get('eleve');
-            $matiereId = $this->request()->get('matiere');
+            
+            // Récupérer la classe de l'élève pour l'année en cours
+            $effectif = Effectif::where('eleve', $eleveId)
+                ->whereHas('anneeScolaire', function($q) {
+                    $q->where('en_cours', true);
+                })
+                ->first();
 
-            if ($eleveId && $matiereId) {  // Vérifier que les valeurs ne sont pas vides
-                $effectif = Effectif::where('eleve', $eleveId)
-                    ->whereHas('anneeScolaires', function($q) {
-                        $q->where('en_cours', true);
-                    })
-                    ->first();
+            if ($effectif) {
+                $query = SuiviCours::with(['affectationMatiere' => function($q) {
+                    $q->with(['enseignant', 'matiere', 'classe']);
+                }]);
 
-                if ($effectif) {
-                    $query = SuiviCours::with('affectationMatiere')
-                        ->whereHas('affectationMatiere', function($q) use ($effectif, $matiereId) {
-                            $q->where('classe', $effectif->classe)
-                              ->where('matiere', $matiereId);
-                        });
+                $query->whereHas('affectationMatiere', function($q) use ($effectif) {
+                    $q->where('classe', $effectif->classe);
+                });
+
+                // Si une matière est sélectionnée, filtrer par matière
+                if ($this->request()->has('matiere') && $this->request()->get('matiere') != '') {
+                    $matiereId = $this->request()->get('matiere');
+                    $query->whereHas('affectationMatiere', function($q) use ($matiereId) {
+                        $q->where('matiere', $matiereId);
+                    });
                 }
             }
         }
@@ -83,12 +91,19 @@ class SuiviCoursParentsDataTable extends DataTable
             ->minifiedAjax()
             ->parameters([
                 'dom'       => 'Bfrtip',
-                'stateSave' => false,
+                'stateSave' => true,
                 'order'     => [[0, 'desc']],
+                'pageLength' => 10,
+                'lengthMenu' => [[10, 25, 50, -1], [10, 25, 50, 'Tout']],
                 'language' => [
                     'url' => url('vendor/datatables/French.json')
                 ],
-                'buttons' => []
+                'buttons' => [
+                    'pageLength',
+                    'colvis'
+                ],
+                'orderCellsTop' => true,
+                'fixedHeader' => true
             ]);
     }
 
@@ -100,11 +115,41 @@ class SuiviCoursParentsDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'date' => ['name' => 'date', 'data' => 'date', 'title' => 'Date'],
-            'enseignant' => ['name' => 'enseignant', 'data' => 'enseignant', 'title' => 'Enseignant'],
-            'titre' => ['name' => 'titre', 'data' => 'titre', 'title' => 'Titre'],
-            'resume' => ['name' => 'resume', 'data' => 'resume', 'title' => 'Résumé'],
-            'observation' => ['name' => 'observation', 'data' => 'observation', 'title' => 'Observation']
+            'date' => [
+                'name' => 'date',
+                'data' => 'date',
+                'title' => 'Date',
+                'orderable' => true,
+                'searchable' => true
+            ],
+            'enseignant' => [
+                'name' => 'enseignant',
+                'data' => 'enseignant',
+                'title' => 'Enseignant',
+                'orderable' => true,
+                'searchable' => true
+            ],
+            'titre' => [
+                'name' => 'titre',
+                'data' => 'titre',
+                'title' => 'Titre',
+                'orderable' => true,
+                'searchable' => true
+            ],
+            'resume' => [
+                'name' => 'resume',
+                'data' => 'resume',
+                'title' => 'Résumé',
+                'orderable' => true,
+                'searchable' => true
+            ],
+            'observation' => [
+                'name' => 'observation',
+                'data' => 'observation',
+                'title' => 'Observation',
+                'orderable' => true,
+                'searchable' => true
+            ]
         ];
     }
 

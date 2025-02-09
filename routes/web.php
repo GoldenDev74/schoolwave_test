@@ -36,6 +36,7 @@ use App\Http\Controllers\UserProfilController;
 use App\Http\Controllers\CorrespondanceController;
 use App\Http\Controllers\EnseignantControleController;
 use App\Http\Controllers\SuiviCoursController;
+use App\Http\Controllers\SuiviCoursParentsController;
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
@@ -152,6 +153,10 @@ Route::get('correspondances/get-recipients', [App\Http\Controllers\Correspondanc
 Route::middleware(['auth'])->group(function () {
      Route::get('/change-password', [App\Http\Controllers\ChangePasswordController::class, 'showChangePasswordForm'])->name('change.password');
      Route::post('/change-password', [App\Http\Controllers\ChangePasswordController::class, 'changePassword'])->name('change.password.post');
+     
+     // Routes pour le suivi des cours parents
+     Route::get('/suiviCoursParents', [SuiviCoursParentsController::class, 'index'])->name('suiviCoursParents.index');
+     Route::get('/suiviCoursParents/getMatieres', [SuiviCoursParentsController::class, 'getMatieres'])->name('suiviCoursParents.getMatieres');
      
      // Routes pour les élèves
      Route::get('suivi-cours-eleves', [App\Http\Controllers\SuiviCoursElevesController::class, 'index'])
