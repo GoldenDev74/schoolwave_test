@@ -37,6 +37,7 @@ use App\Http\Controllers\CorrespondanceController;
 use App\Http\Controllers\EnseignantControleController;
 use App\Http\Controllers\SuiviCoursController;
 use App\Http\Controllers\SuiviCoursParentsController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
