@@ -11,10 +11,10 @@ use App\Models\Eleve;
 use App\Models\Effectif;
 use App\Models\Matiere;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 use Response;
-use Auth;
-use DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class SuiviCoursParentsController extends AppBaseController
 {
