@@ -367,6 +367,7 @@ class AffectationMatiereController extends AppBaseController
     
             // Fetch horaires filtered by type_cours
             $horaires = Horaire::where('type_cours', $typeCours)->get();
+            $anneeScolaire = AnneeScolaire::where('en_cours', true)->first();
             Log::info('Horaires trouvés', ['count' => $horaires->count()]);
     
             // Fetch affectations with related data, filtered by type_cours
@@ -375,10 +376,12 @@ class AffectationMatiereController extends AppBaseController
                 'classe',
                 'matiere',
                 'typeCours',
+                'anneeScolaire',
                 'horaire',
                 'jour',
                 'modeAffectation'
             ])->where($type, $id)
+              ->where('annee_scolaire', $anneeScolaire->id) // Ajout de la condition pour année scolaire active
               ->where('type_cours', $typeCours)
               ->where('annulation', false); // Ajout de la condition pour annulation
     
@@ -606,8 +609,8 @@ class AffectationMatiereController extends AppBaseController
             'enseignant'     => 'required|exists:enseignant,id',
             'type_cours'     => 'required|exists:type_cours,id',
             'mode_affection' => 'required|in:1,2',
-            'debut' => 'required_if:mode_affection,2|date',
-            'fin' => 'required_if:mode_affection,2|date|after_or_equal:debut',
+            'debut' => 'nullable|required_if:mode_affection,2|date', // Ajout de 'nullable'
+            'fin' => 'nullable|required_if:mode_affection,2|date|after_or_equal:debut', // Ajout de 'nullable'
         ]);
     
         // Récupération de l'année scolaire active

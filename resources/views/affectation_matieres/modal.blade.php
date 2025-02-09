@@ -511,32 +511,37 @@ $(document).ready(function() {
 
     // Pré-remplir les champs avec les données existantes
     if (data) {
-        $('#modal-matiere').val(data.matiere?.id || data.matiere);
+    $('#modal-matiere').val(data.matiere?.id || data.matiere);
 
-        const enseignantId = data.enseignant?.id || data.enseignant;
-        const classeId = data.classe?.id || data.classe;
-        const typeCours = data.type_cours?.id || data.type_cours;
+    const enseignantId = data.enseignant?.id || data.enseignant;
+    const classeId = data.classe?.id || data.classe;
+    const typeCours = data.type_cours?.id || data.type_cours;
 
-        // Pré-remplir le jour et l'horaire
-        $('#modal-jour').val(data.jour?.id || data.jour);
-        $('#modal-horaire').val(data.horaire?.id || data.horaire);
+    // Pré-remplir le jour et l'horaire
+    $('#modal-jour').val(data.jour?.id || data.jour);
+    $('#modal-horaire').val(data.horaire?.id || data.horaire);
 
-        // Appliquer les valeurs
-        $('#modal-enseignant').val(enseignantId);
-        $('#modal-classe').val(classeId);
-        $('#modal-type-cours').val(typeCours);
+    // Appliquer les valeurs
+    $('#modal-enseignant').val(enseignantId);
+    $('#modal-classe').val(classeId);
+    $('#modal-type-cours').val(typeCours);
 
-        // Mode dynamique/statique
-        $(`input[name="mode_affection"][value="${data.mode_affection}"]`).prop('checked', true);
-        if (data.mode_affection == 2) {
-            $('#modal-dates_container').show();
-            $('#modal-debut, #modal-fin').prop('required', true);
+    // Mode dynamique/statique
+    $(`input[name="mode_affection"][value="${data.mode_affection}"]`).prop('checked', true);
+    if (data.mode_affection == 2) {
+        $('#modal-dates_container').show();
+        $('#modal-debut, #modal-fin').prop('required', true);
 
-            // Formater les dates avant de les assigner
-            $('#modal-debut').val(moment(data.debut).format('DD/MM/YYYY'));
-            $('#modal-fin').val(moment(data.fin).format('DD/MM/YYYY'));
-        }
+        // Utiliser moment.js pour formater les dates
+        // Assurez-vous que moment.js est bien inclus dans votre projet
+        const debutFormatted = moment(data.debut).format('YYYY-MM-DD');
+        const finFormatted = moment(data.fin).format('YYYY-MM-DD');
+
+        $('#modal-debut').val(debutFormatted);
+        $('#modal-fin').val(finFormatted);
     }
+}
+
 
     // Gérer l'affichage selon le contexte
     if (context === 'enseignant') {
@@ -730,7 +735,7 @@ $(document).ready(function() {
 
     // Configuration des datepickers
     $('.datepicker').datepicker({
-        format: 'dd/mm/yyyy',
+        format: 'yyyy-mm-dd',
         autoclose: true,
         todayHighlight: true,
         language: 'fr',

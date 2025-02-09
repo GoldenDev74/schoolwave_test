@@ -5,6 +5,12 @@ namespace App\DataTables;
 use App\Models\SuiviCours;
 use Yajra\DataTables\Services\DataTable;
 use Yajra\DataTables\EloquentDataTable;
+use App\Models\Classe;
+use App\Models\Effectif;
+use App\Models\Matiere;
+use App\Models\TypeCours;
+use App\Models\Horaire;
+use App\Models\AffectationMatiere;
 
 class SuiviCoursDataTable extends DataTable
 {
@@ -19,6 +25,19 @@ class SuiviCoursDataTable extends DataTable
         $dataTable = new EloquentDataTable($query);
 
         return $dataTable
+        ->addColumn('affectation', function ($suiviCours) {
+            $affectation = AffectationMatiere::find($suiviCours->affection_matiere); // Correction: 'affection_matiere' au lieu de 'affectation_cours'
+            if (!$affectation) {
+                return 'Non défini';
+            }
+            $classe = Classe::find($affectation->classe)->libelle ?? 'Non défini';
+            $matiere = Matiere::find($affectation->matiere)->libelle ?? 'Non défini';
+            $horaire = Horaire::find($affectation->horaire)->libelle ?? 'Non défini';
+            $typeCours = TypeCours::find($affectation->type_cours)->libelle ?? 'Non défini';
+        
+            return "$classe, $matiere ($horaire, $typeCours)";
+        })
+        
             ->editColumn('date', function ($request) {
                 return $request->date ? date('d-m-Y', strtotime($request->date)) : '';
             })
@@ -51,6 +70,7 @@ class SuiviCoursDataTable extends DataTable
                 'dom'       => 'Bfrtip',
                 'stateSave' => true,
                 'order'     => [[0, 'desc']],
+                'language' => ['url' => url('vendor/datatables/French.json')],
                 'buttons'   => [
                     // Enable Buttons as per your need
 //                    ['extend' => 'create', 'className' => 'btn btn-default btn-sm no-corner',],
@@ -74,7 +94,8 @@ class SuiviCoursDataTable extends DataTable
             'titre',
             'resume',
             'observation',
-            'affection_matiere'
+            //'affection_matiere',
+            'affectation' => ['title' => 'Affectation'],
         ];
     }
 

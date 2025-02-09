@@ -19,7 +19,7 @@ class ExamenDataTable extends DataTable
         return datatables()
             ->eloquent($query)
             ->editColumn('type_examen', function ($row) {
-                return $row->type_examens['libelle'];
+                return $row->typeExamen['libelle'];
             })
             ->editColumn('eleve', function ($row) {
                 return $row->eleves['nom_prenom'];

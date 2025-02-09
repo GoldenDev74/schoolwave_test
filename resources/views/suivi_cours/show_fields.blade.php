@@ -23,8 +23,22 @@
 </div>
 
 <!-- Affection Matiere Field -->
+<!-- Remplacez le champ 'affection_matiere' par : -->
 <div class="col-sm-12">
-    {!! Form::label('affection_matiere', 'Affection Matiere:') !!}
-    <p>{{ $suiviCours->affection_matiere }}</p>
+    {!! Form::label('affectation', 'Affectation:') !!}
+    <p>
+        @php
+            $affectation = App\Models\AffectationMatiere::find($suiviCours->affection_matiere);
+            if ($affectation) {
+                $classe = App\Models\Classe::find($affectation->classe)->libelle ?? 'Non défini';
+                $matiere = App\Models\Matiere::find($affectation->matiere)->libelle ?? 'Non défini';
+                $horaire = App\Models\Horaire::find($affectation->horaire)->libelle ?? 'Non défini';
+                $typeCours = App\Models\TypeCours::find($affectation->type_cours)->libelle ?? 'Non défini';
+                echo "$classe, $matiere ($horaire, $typeCours)";
+            } else {
+                echo 'Non défini';
+            }
+        @endphp
+    </p>
 </div>
 
