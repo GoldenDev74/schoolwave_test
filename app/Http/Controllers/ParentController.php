@@ -15,10 +15,10 @@ use App\Models\Pays;
 use App\Models\LienParentEleve;
 use App\Models\Sexe;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use DB;
+use Illuminate\Support\Facades\DB;
 use App\Mail\Contact;
 use Illuminate\Support\Facades\Mail;
 

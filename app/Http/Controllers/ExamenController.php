@@ -12,10 +12,14 @@ use App\Models\Eleve;
 use App\Models\AffectationMatiere;
 use App\Models\Effectif;
 use App\Models\Examen;
-use Illuminate\Http\Request;
-use Flash;
 use App\Models\TypeExamen;
+use App\Models\AnneeScolaire;
+use App\Models\Classe;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Laracasts\Flash\Flash;
+use Response;
 
 class ExamenController extends AppBaseController
 {

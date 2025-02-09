@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateDiplomeRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\DiplomeRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class DiplomeController extends AppBaseController
 {

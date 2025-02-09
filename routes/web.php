@@ -36,6 +36,8 @@ use App\Http\Controllers\UserProfilController;
 use App\Http\Controllers\CorrespondanceController;
 use App\Http\Controllers\EnseignantControleController;
 use App\Http\Controllers\SuiviCoursController;
+use App\Http\Controllers\SuiviCoursParentsController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
@@ -153,6 +155,10 @@ Route::middleware(['auth'])->group(function () {
      Route::get('/change-password', [App\Http\Controllers\ChangePasswordController::class, 'showChangePasswordForm'])->name('change.password');
      Route::post('/change-password', [App\Http\Controllers\ChangePasswordController::class, 'changePassword'])->name('change.password.post');
      
+     // Routes pour le suivi des cours parents
+     Route::get('/suiviCoursParents', [SuiviCoursParentsController::class, 'index'])->name('suiviCoursParents.index');
+     Route::get('/suiviCoursParents/getMatieres', [SuiviCoursParentsController::class, 'getMatieres'])->name('suiviCoursParents.getMatieres');
+     
      // Routes pour les élèves
      Route::get('suivi-cours-eleves', [App\Http\Controllers\SuiviCoursElevesController::class, 'index'])
          ->name('suiviCoursEleves.index')
@@ -163,7 +169,7 @@ Route::middleware(['auth'])->group(function () {
          ->name('suiviCoursParents.index')
          ->middleware('role:parent');
  });
- 
+
  Route::get('get-matieres', [App\Http\Controllers\SuiviCoursParentsController::class, 'getMatieres'])
      ->name('getMatieres');
  
@@ -172,4 +178,6 @@ Route::middleware(['auth'])->group(function () {
  Route::get('/api/enseignant/classes', [App\Http\Controllers\SuiviCoursEnseignantController::class, 'getEnseignantClasses']);
  Route::get('/api/enseignant/classe/{classe}/matieres', [App\Http\Controllers\SuiviCoursEnseignantController::class, 'getEnseignantMatieres']);
  Route::get('/api/enseignant/suivis/{classe}/{matiere}', [App\Http\Controllers\SuiviCoursEnseignantController::class, 'getSuivis']);
- 
+
+Route::get('suiviCoursEleves', [App\Http\Controllers\SuiviCoursElevesController::class, 'index'])->name('suiviCoursEleves.index');
+Route::get('suiviCoursEleves/getMatieres', [App\Http\Controllers\SuiviCoursElevesController::class, 'getMatieres'])->name('suiviCoursEleves.getMatieres');

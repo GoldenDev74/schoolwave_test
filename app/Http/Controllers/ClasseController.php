@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateClasseRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\ClasseRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 use App\Models\Salles;
 use App\Models\TypeCours;
 

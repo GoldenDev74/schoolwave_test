@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateUsersRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\UsersRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class UsersController extends AppBaseController
 {

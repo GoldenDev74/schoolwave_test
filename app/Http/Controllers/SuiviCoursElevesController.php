@@ -2,22 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTables\SuiviCoursElevesDataTable;
-use App\Models\SuiviCours;
-use App\Models\User;
-use App\Models\UserProfil;
-use App\Models\Effectif;
-use App\Models\AffectationMatiere;
-use App\Models\Eleve;
-use Illuminate\Support\Facades\Auth;
-use Laracasts\Flash\Flash;
-use App\Models\Matiere;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class SuiviCoursElevesController extends AppBaseController
+class SuiviCoursElevesController extends Controller
 {
-    public function index(SuiviCoursElevesDataTable $dataTable)
+    public function index(Request $request)
     {
         // Vérifier si l'utilisateur a le profil élève
         $user = Auth::user();
@@ -28,63 +19,98 @@ class SuiviCoursElevesController extends AppBaseController
             ->first();
 
         if (!$userProfil) {
-            Flash::error('Vous n\'avez pas accès à cette page.');
+            if ($request->ajax()) {
+                return response()->json(['data' => []]);
+            }
             return view('suiviCoursEleves.index')->with('hasAccess', false);
         }
 
-        // Si on arrive ici, c'est que l'utilisateur est un élève
-        // Récupérer l'élève correspondant à l'utilisateur connecté
-        $eleve = DB::table('eleve')
-            ->where('id', $userProfil->eleve)
+        // Pour les requêtes AJAX (DataTables)
+        if ($request->ajax()) {
+            // Si aucune matière n'est sélectionnée, retourner un tableau vide
+            if (!$request->has('matiere') || empty($request->matiere)) {
+                return response()->json(['data' => []]);
+            }
+
+            // Récupérer la classe de l'élève pour l'année en cours
+            $effectif = DB::table('effectif')
+                ->where('eleve', $userProfil->eleve)
+                ->whereExists(function ($query) {
+                    $query->select(DB::raw(1))
+                        ->from('annee_scolaire')
+                        ->whereRaw('annee_scolaire.id = effectif.annee_scolaire')
+                        ->where('en_cours', true);
+                })
+                ->first();
+
+            if (!$effectif) {
+                return response()->json(['data' => []]);
+            }
+
+            $query = DB::table('suivi_cours as sc')
+                ->join('affectation_matiere as am', 'am.id', '=', 'sc.affection_matiere')
+                ->join('annee_scolaire as a', 'a.id', '=', 'am.annee_scolaire')
+                ->join('enseignant as e', 'e.id', '=', 'am.enseignant')
+                ->where('am.classe', $effectif->classe)
+                ->where('am.matiere', $request->matiere)
+                ->where('a.en_cours', true)
+                ->select([
+                    'sc.date',
+                    'sc.titre',
+                    'sc.resume',
+                    'sc.observation',
+                    'am.type_cours',
+                    'e.nom_prenom as enseignant'
+                ]);
+
+            return datatables()->of($query)->toJson();
+        }
+
+        // Pour l'affichage initial de la page
+        return view('suiviCoursEleves.index')
+            ->with('hasAccess', true);
+    }
+
+    public function getMatieres(Request $request)
+    {
+        // Vérifier si l'utilisateur a le profil élève
+        $user = Auth::user();
+        $userProfil = DB::table('user_profil')
+            ->join('profil', 'profil.id', '=', 'user_profil.profil')
+            ->where('user_profil.user', $user->id)
+            ->where('profil.libelle', 'Eleve')
             ->first();
 
-        if (!$eleve) {
-            Flash::error('Aucun élève trouvé pour votre compte.');
-            return view('suiviCoursEleves.index')->with('hasAccess', false);
+        if (!$userProfil) {
+            return response()->json([]);
         }
-        
-        // Récupérer l'effectif (classe) actuel de l'élève
+
+        // Récupérer la classe de l'élève pour l'année en cours
         $effectif = DB::table('effectif')
-            ->join('annee_scolaire', 'annee_scolaire.id', '=', 'effectif.annee_scolaire')
-            ->where('effectif.eleve', $eleve->id)
-            ->where('annee_scolaire.en_cours', true)
+            ->where('eleve', $userProfil->eleve)
+            ->whereExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('annee_scolaire')
+                    ->whereRaw('annee_scolaire.id = effectif.annee_scolaire')
+                    ->where('en_cours', true);
+            })
             ->first();
 
         if (!$effectif) {
-            Flash::error('Vous n\'êtes pas inscrit dans une classe pour l\'année en cours.');
-            return view('suiviCoursEleves.index')->with('hasAccess', false);
+            return response()->json([]);
         }
 
-        // Récupérer les suivis de cours pour la classe de l'élève
-        $suivis = DB::table('suivi_cours as sc')
-            ->join('affectation_matiere as am', 'am.id', '=', 'sc.affection_matiere')
-            ->join('classe as c', 'c.id', '=', 'am.classe')
+        // Récupérer uniquement les matières affectées à la classe de l'élève
+        $matieres = DB::table('affectation_matiere as am')
             ->join('matiere as m', 'm.id', '=', 'am.matiere')
+            ->join('annee_scolaire as a', 'a.id', '=', 'am.annee_scolaire')
             ->where('am.classe', $effectif->classe)
-            ->select(
-                'sc.*',
-                'm.libelle as matiere',
-                'c.libelle as classe',
-                'am.type_cours',
-                'am.horaire'
-            )
+            ->where('a.en_cours', true)
+            ->select('m.id', 'm.libelle')
+            ->distinct()
+            ->orderBy('m.libelle')
             ->get();
 
-        return view('suiviCoursEleves.index')
-            ->with('hasAccess', true)
-            ->with('suivis', $suivis)
-            ->with('matieres', DB::table('matiere')->pluck('libelle', 'id'));
-    }
-
-    public function show($id)
-    {
-        $suiviCours = SuiviCours::find($id);
-
-        if (empty($suiviCours)) {
-            Flash::error('Suivi de cours non trouvé');
-            return redirect(route('suiviCoursEleves.index'));
-        }
-
-        return view('suivi_cours_eleves.show', compact('suiviCours'));
+        return response()->json($matieres);
     }
 }

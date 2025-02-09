@@ -16,11 +16,10 @@ use Illuminate\Http\Request;
 use App\Models\Pays;
 use App\Models\Sexe;
 use App\Models\Examen;
-use Flash;
+use Laracasts\Flash\Flash;
 use Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-
 
 class MesElevesController extends Controller
 {

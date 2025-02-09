@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateTypepersonnelRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Repositories\TypepersonnelRepository;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 
 class TypepersonnelController extends AppBaseController
 {
